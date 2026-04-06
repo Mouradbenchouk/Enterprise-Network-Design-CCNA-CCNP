@@ -1,0 +1,17 @@
+					STP Root Bridg
+
+🔹 Core-1
+#spanning-tree vlan 1-4094 priority 4096
+
+🔹 Core-2
+#spanning-tree vlan 1-4094 priority 8192
+
+
+📌 Cisco recommande souvent :
+#spanning-tree vlan 1-4094 root primary
+#spanning-tree vlan 1-4094 root secondary
+
+
+
+Verify the global Root Bridge.
+#show spanning-tree

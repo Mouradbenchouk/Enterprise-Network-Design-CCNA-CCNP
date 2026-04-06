@@ -1,0 +1,45 @@
+Objectives:
+
+* Change the native VLAN on the trunks
+* Block unnecessary VLANs
+* Protect Access and Trunk ports
+
+
+#vlan 99
+ #name NATIVE-BLACKHOLE
+
+
+#interface range g0/1 - 2
+ #switchport trunk native vlan 99
+ #switchport trunk allowed vlan 10,20,30,40,50,99
+
+
+Block VLAN 1 everywhere.
+
+#interface range g0/3 - 24
+#switchport access vlan 10
+ #switchport mode access
+
+
+
+Enable port security on Access ports (optional but recommended).
+Apply port security on the Access ports connected to users:
+
+#show interfaces status
+#interface g0/3- 24
+#switchport mode access
+ #switchport port-security
+ #switchport port-security maximum 2
+ #switchport port-security violation shutdown
+
+Other possible options:
+shutdown → the port is automatically disabled
+restrict → (blocks access but keeps the port up), 
+protect → (ignores unauthorized addresses)
+
+
+
+Verification
+#show vlan brief
+#show interfaces trunk
+#show running-config | include native

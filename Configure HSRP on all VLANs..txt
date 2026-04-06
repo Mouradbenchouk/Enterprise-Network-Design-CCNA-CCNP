@@ -1,0 +1,37 @@
+On HQ-Core-01 (the Master):
+
+#interface Vlan 10
+ #ip address 10.0.10.252 255.255.255.0
+ #standby 10 ip 10.0.10.1          \\ Virtual IP for the PCs.
+ #standby 10 priority 110          \\ High priority to be active.
+ #standby 10 preempt               \\ Regains its role after reboot.
+#exit
+
+#interface Vlan 20
+ #ip address 10.0.20.252 255.255.255.0
+ #standby 20 ip 10.0.20.1          \\ Virtual IP for the Server
+ #standby 20 priority 110
+ #standby 20 preempt
+
+.
+.
+.
+.
+
+
+On HQ-Core-02 (the Backup):
+
+#interface Vlan 10
+ #ip address 10.0.10.253 255.255.255.0
+ #standby 10 ip 10.0.10.1            \\ Same virtual IP. !
+#exit
+
+#interface Vlan 20
+ #ip address 10.0.20.253 255.255.255.0
+ #standby 20 ip 10.0.20.1
+
+
+Verify the HSRP status.
+
+#show standby
+#show standby brief
