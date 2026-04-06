@@ -1,0 +1,110 @@
+1️⃣ Securing console and SSH access
+#ip domain-name techsolutions.com
+#username admin privilege 15 secret Cisco123
+#crypto key generate rsa
+#2048
+
+#ip ssh version 2
+#line console 0
+#login local
+#exec-timeout 5 0
+#logging synchronous
+#line vty 0 4
+#transport input ssh
+#login local
+#exec-timeout 5 0
+#exit
+
+
+
+
+ Test de simulation
+ssh -l admin 10.0.100.2
+or
+ssh admin@10.0.100.2
+
+
+2️⃣ Disabling Telnet
+#line vty 0 4
+ #transport input ssh
+
+
+3️⃣ Standard ACL (simple filtering)
+#access-list 10 permit 10.0.100.0 0.0.0.255
+#line vty 0 4
+ #access-class 10 in
+
+
+4️⃣ Extended ACL (inter-VLAN control)
+#ip access-list extended VLAN_CONTROL
+ #permit ip 10.0.10.0 0.0.0.255 10.0.30.0 0.0.0.255
+ #deny ip 10.0.10.0 0.0.0.255 10.0.20.0 0.0.0.255
+ #permit ip any any
+
+#interface vlan 10
+ #ip access-group VLAN_CONTROL in
+
+
+
+5️⃣ DHCP Snooping
+#ip dhcp snooping
+#ip dhcp snooping vlan 10,20,30,40
+#interface g1/0/1-4
+ #ip dhcp snooping trust  ! 
+#interface range g1/0/6-24
+ #ip dhcp snooping limit rate 10
+
+
+
+6️⃣ Dynamic ARP Inspection (DAI)
+#ip arp inspection vlan 10,20,30,40
+#interface g0/1
+ #ip arp inspection trust
+
+
+
+7️⃣ Port Security
+#interface range g0/2 - 24
+ #switchport mode access
+ #switchport port-security
+ #switchport port-security maximum 2
+ #switchport port-security violation shutdown
+ #switchport port-security mac-address sticky
+
+8️⃣ Disabling unused ports
+#interface range g0/25 - 48
+ #shutdown
+
+
+9️⃣ VLAN Hopping Protection
+#interface range g0/1 - 48
+ #switchport mode access
+ #switchport access vlan 10  ! ou autre VLAN spécifique
+ #switchport nonegotiate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
