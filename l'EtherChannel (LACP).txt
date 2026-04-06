@@ -1,0 +1,15 @@
+1/Configure or create the EtherChannel (LACP) between Core-01 and Core-02. ______________
+
+
+
+SwitchA(config)# interface range g0/1-2                
+SwitchA(config-if-range)# channel-group 1 mode active  
+SwitchA(config-if-range)# exit
+SwitchA(config)# interface Port-channel 1
+SwitchA(config-if)# switchport mode trunk             
+
+
+____________________2/Verify___________________________________________________________
+
+SwitchA# show running-config
+SwitchA# show etherchannel summary

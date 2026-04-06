@@ -1,0 +1,30 @@
+Switch> enable
+Switch# configure terminal
+Switch(config)# hostname CORE
+SwitchA(config)# line console 0
+SwitchA(config-line)# password *******
+SwitchA(config-line)# login
+SwitchA(config-line)# exit
+
+
+
+1\VTY password (SSH/Telnet)
+
+SwitchA(config)# line vty 0 4
+SwitchA(config-line)# password *******
+SwitchA(config-line)# login
+SwitchA(config-line)# exit
+
+
+2\Enable password activation.
+SwitchA(config)# enable secret ********
+
+3/ Enable encryption for all plain-text passwords.
+SwitchA(config)# service password-encryption 
+
+
+______________________2/Secure the Ethernet ports (unused ports).______________________
+
+SwitchA(config)# interface range fa0/5 - 24
+SwitchA(config-if-range)# shutdown
+SwitchA(config-if-range)# exit

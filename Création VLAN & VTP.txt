@@ -1,0 +1,37 @@
+	
+
+vlan 10
+ name SALES
+vlan 20
+ name HR
+vlan 99
+ name NATIVE					
+
+
+
+
+
+						VTP (VLAN Trunking Protocol)
+
+1- Configure the VTP domain on a switch (server):Switch> enable
+Switch# configure terminal
+Switch(config)# vtp domain LABORATOIRE
+Switch(config)# vtp mode server
+Switch(config)# vtp password secret123
+
+2- Configure a VTP client:
+Switch(config)# vtp mode client
+Switch(config)# vtp domain LABORATOIRE
+Switch(config)# vtp password secret123
+
+
+Verify VTP:
+Switch# show vtp status
+
+
+Trunk port :Transports multiple VLANs between switches.
+Switch(config)# interface g0/24
+Switch(config-if)# switchport mode trunk
+Switch(config-if)# switchport trunk allowed vlan 10,20,30
+Switch(config-if)# switchport trunk native vlan 99   # Security
+
