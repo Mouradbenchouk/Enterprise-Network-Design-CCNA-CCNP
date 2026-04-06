@@ -1,0 +1,113 @@
+PHASE 3 – Routing Avancé
+
+ÉTAPE 1 — Liaisons routées Core ↔ Edge
+
+| Lien           | Réseau        |
+| -------------- | ------------- |
+| Core-01 ↔ Edge | 10.0.254.0/30 |
+| Core-02 ↔ Edge | 10.0.254.4/30 |
+
+
+BERLIN-Core-01 :
+#enable
+#configure terminal
+#interface g1/0/5
+ #no switchport
+ #ip address 10.0.254.1 255.255.255.252
+
+BERLIN-Core-02 :
+#enable
+#configure terminal
+#interface g1/0/5
+ #no switchport
+ #ip address 10.0.254.5 255.255.255.252
+
+
+BER-Edge-R1 :
+#enable
+#configure terminal
+#interface g0/0
+ #ip address 10.0.254.2 255.255.255.252
+
+#interface g0/1
+#ip address 10.0.254.6 255.255.255.252
+
+
+ÉTAPE 2 — Activer OSPF
+
+Sur Core-01 / Core-02 :
+#router ospf 1
+ #router-id X.X.X.X
+ #network 10.0.0.0 0.0.255.255 area 0
+
+
+
+sur BER-Edge-R1 :
+#router ospf 1
+ #router-id 3.3.3.3
+#network 10.0.254.0 0.0.0.7 area 0
+
+
+ÉTAPE 3 — Default Route vers ISP
+BER-Edge-R1 :
+#ip route 0.0.0.0 0.0.0.0 ISP_IP
+
+
+
+ÉTAPE 4 — NAT sur Edge
+
+! Interface LAN interne (vers Core)
+#interface g0/1
+ #ip address 10.0.254.2 255.255.255.252
+ #ip nat inside
+ #no shutdown
+
+! Interface WAN (vers ISP)
+#interface g0/0
+ #ip address 200.1.1.2 255.255.255.252
+ #ip nat outside
+ #no shutdown
+
+Step 2 – Create a NAT pool or use PAT.
+Use PAT (Port Address Translation) → a single public IP for the entire LAN.
+
+#access-list 1 permit 10.0.0.0 0.0.255.255
+#ip nat inside source list 1 interface g0/2 overload
+
+
+Step 3 – Verification.
+
+#show ip ospf neighbor
+#show ip route ospf
+Vérifier que l’Edge annonce la default route
+#show ip route  
+#show run | section ospf
+#show ip route | include 0.0.0.0
+#show run | section nat
+#show ip nat translations
+#show ip interface brief
+
+
+
+dans ISP
+#show ip route
+si ya pas S* 0.0.0.0/0
+#ip route 0.0.0.0 0.0.0.0 8.8.8.8
+or
+#ip route 0.0.0.0 0.0.0.0 <next-hop-vers-internet>
+
+#show ip route \\ pas une route vers 8.8.8.8
+#interface loopback0
+ #ip address 8.8.8.8 255.255.255.255
+#ip route 0.0.0.0 0.0.0.0 null0
+
+or
+
+#ip route 8.8.8.8 255.255.255.255 200.1.1.2
+
+Advanced checking
+#debug ip icmp
+
+
+
+
